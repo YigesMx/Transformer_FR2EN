@@ -20,12 +20,12 @@ But the conda yml may not work properly due to the PyTorch version, CUDA version
 
 Here is the list of essential packages:
 
-- pytorch 2.2.2         (You can just install from the official website along with torchvision, torchaudio)
-- ignite 0.5.0.post2
-- huggingface-hub 0.22.2
-- datasets 2.19.0       (for iwslt2017 dataset)
-- transformers 4.40.1   (for tokenizer)
-- nltk 3.8.1            (for BLEU-4 score)
+- pytorch == 2.2.2         (You can just install from the official website along with torchvision, torchaudio)
+- ignite == 0.5.0.post2
+- huggingface-hub >= 0.22.2
+- datasets >= 2.19.0       (for iwslt2017 dataset)
+- transformers >= 4.40.1   (for tokenizer)
+- nltk >= 3.8.1            (for BLEU-4 score)
 - tensorboard           (for visualizing logs)
 
 For attn visualization:
@@ -33,7 +33,7 @@ For attn visualization:
 - matplotlib
 - seaborn
 
-You can install the other packages when you need them.
+You can install the other packages with latest version when you need them.
 
 
 ## Usage
