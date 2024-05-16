@@ -90,3 +90,21 @@ What you fear is never as severe as you can imagine, the fear that you let it be
 25.0699 What you fear is never as severe as what you can imagine, the fear that you allow to accumulate in your mind is worse than the situation that actually exists.
 25.0656 What you fear is never as severe as what you can imagine, the fear that you allow to accumulate in your mind is worse than the situation that really exists.
 31.2803 What you fear is never as severe as what you can imagine, the fear that you allow to accumulate in your mind is worse than the situation that actually exists. is worse than the fact that exists.
+
+## Analysis
+
+### Sinusoidal Positional Encoding
+
+![sinusoidal position encoding](./assets/sinusoidal_pos_encoding.png)
+
+![sinusoidal attn](./assets/sinusoidal_attn.png)
+
+### Learnable Positional Encoding
+
+![learnable position encoding](./assets/learnable_pos_encoding.png)
+
+![learnable attn](./assets/learnable_attn.png)
+
+### RoPE
+
+![rope attn](./assets/rope_attn.png)
