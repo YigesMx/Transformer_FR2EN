@@ -8,9 +8,33 @@ We implemented the model following the [Attention is All You Need](https://arxiv
 
 Furthermore, we implemented and compared three different positional encodings: `sinusoidal`, `learnable`, and `RoPE`. More details about the experiments can be found in the `report.md`.
 
-## Requirements
+## Setup
 
-TODO
+There is a 'environment.yml' file in the repository. You can create a new conda environment using the following command:
+
+```bash
+conda env create -f environment.yml
+```
+
+But the conda yml may not work properly due to the PyTorch version, CUDA version, and other dependencies.
+
+Here is the list of essential packages:
+
+- pytorch 2.2.2         (You can just install from the official website along with torchvision, torchaudio)
+- ignite 0.5.0.post2
+- huggingface-hub 0.22.2
+- datasets 2.19.0       (for iwslt2017 dataset)
+- transformers 4.40.1   (for tokenizer)
+- nltk 3.8.1            (for BLEU-4 score)
+- tensorboard           (for visualizing logs)
+
+For attn visualization:
+- ipykernal
+- matplotlib
+- seaborn
+
+You can install the other packages when you need them.
+
 
 ## Usage
 
@@ -18,6 +42,7 @@ To train the model, you can run the following command:
 
 ```bash
 python train.py --config PATH_TO_CONFIG_FILE.py
+tensorboard --logdir runs
 ```
 
 To translate a sentence, you can run the following command:
