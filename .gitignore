@@ -166,4 +166,7 @@ cython_debug/
 refs/
 
 # pt
-.pt
+*.pt
+
+# data cache
+data/cache/
