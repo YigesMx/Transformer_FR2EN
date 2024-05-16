@@ -45,14 +45,15 @@ python test.py --config configs/transformer_512dh8_e6d6_epochbased_rope.py --mod
 
 ## Test
 
-src_text: "Ce dont vous avez peur n’est jamais aussi grave que ce que vous imaginez. La peur que vous laissez s'accumuler dans votre esprit est pire que la situation qui existe réellement."
+src_text: `"Ce dont vous avez peur n’est jamais aussi grave que ce que vous imaginez. La peur que vous laissez s'accumuler dans votre esprit est pire que la situation qui existe réellement."`
 
-ground_truth: "What you are afraid of is never as bad as what you imagine. The fear you let build up in your mind is worse than the situation that actually exists"
+ground_truth: `"What you are afraid of is never as bad as what you imagine. The fear you let build up in your mind is worse than the situation that actually exists"`
 
 ### Sinusoidal Positional Encoding
 
 output_texts:
 
+```
 === greedy search ===
 What you never care about yourself, and fear that's worse than the situation that you really exists in your mind is worse than the situation.
 
@@ -62,11 +63,13 @@ What you never care about yourself, and fear that's worse than the situation tha
 12.0893 What you're never is, and fear that you are worse than the situation in your mind.
 17.9308 What you're never care about, fear that you's fear in your mind is worse than the very much worse than the situation.
 18.3417 What you're never care about, fear that you's fear in your mind is worse than the very much worse than the situation.
+```
 
 ### Learnable Positional Encoding
 
 output_texts:
 
+```
 === greedy search ===
 What you never cares you're going to be thinking, and the situation that you're going to be in your mind is worse than the situation.
 
@@ -76,11 +79,13 @@ What you never cares you're going to be thinking, and the situation that you're 
 16.7127 And what you never is the fear that you're going to say, the fear you's going to invest in your mind.
 17.9518 And what you never is the fear that you're going to say, the fear you's going to engage in your mind..
 21.0737 And what you never is the fear that you're going to say, the fear you's going to engage in your mind. worse than the situation.
+```
 
 ### RoPE
 
 output_texts:
 
+```
 === greedy search ===
 What you fear is never as severe as you can imagine, the fear that you let it be part of, the fear you will be freeer in your mind, is worse than the situation that really exists.
 
@@ -90,6 +95,7 @@ What you fear is never as severe as you can imagine, the fear that you let it be
 25.0699 What you fear is never as severe as what you can imagine, the fear that you allow to accumulate in your mind is worse than the situation that actually exists.
 25.0656 What you fear is never as severe as what you can imagine, the fear that you allow to accumulate in your mind is worse than the situation that really exists.
 31.2803 What you fear is never as severe as what you can imagine, the fear that you allow to accumulate in your mind is worse than the situation that actually exists. is worse than the fact that exists.
+```
 
 ## Analysis
 
