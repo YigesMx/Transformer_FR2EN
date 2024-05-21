@@ -669,3 +669,12 @@ The testing script is implemented in `test.py`. It's the main testing file used 
 Further more, we visualized the attention weights of the Transformer model, including the Encoder Self-Attention, Decoder Self-Attention, and Encoder-Decoder Cross Attention. We also visualized the sinusoidal positional encoding and learnable positional encoding of our trained model.
 
 More details are in the `Analysis of different Positional Encoding` part of the report.
+
+## References
+
+[1] A. Vaswani et al., “Attention is all you need,” in Proceedings of the 31st International Conference on Neural Information Processing Systems, in NIPS’17. Red Hook, NY, USA: Curran Associates Inc., Dec. 2017, pp. 6000–6010.
+[2] H. Yan, B. Deng, X. Li, and X. Qiu, “TENER: Adapting Transformer Encoder for Named Entity Recognition.” arXiv, Dec. 10, 2019. doi: 10.48550/arXiv.1911.04474.
+[3] O. Press, N. A. Smith, and M. Lewis, “Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation.” arXiv, Apr. 22, 2022. doi: 10.48550/arXiv.2108.12409.
+[4] H. Touvron et al., “Llama 2: Open Foundation and Fine-Tuned Chat Models.” arXiv, Jul. 19, 2023. doi: 10.48550/arXiv.2307.09288.
+[5] C. Raffel et al., “Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer.” arXiv, Sep. 19, 2023. doi: 10.48550/arXiv.1910.10683.
+[6] J. Su, Y. Lu, S. Pan, A. Murtadha, B. Wen, and Y. Liu, “RoFormer: Enhanced Transformer with Rotary Position Embedding.” arXiv, Nov. 08, 2023. doi: 10.48550/arXiv.2104.09864.
