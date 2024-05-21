@@ -98,14 +98,14 @@ The Sinusoidal Positional Encoding is a fixed positional encoding, which is not 
 
 $$
 \begin{aligned}
-PE(t+\Delta{t},2i)& =\quad PE(t+\Delta{t},2i)  \\
+PE(t+\Delta{t},2i)& =\quad PE(t+\Delta{t},2i) \\
 &=\quad sin(t*w_{2i}+\Delta{t}*w_{2i}) \\
 &=\quad sin(t*w_{2i})cos(\Delta{t}*w_{2i})+cos(t*w_{2i})sin(\Delta{t}*w_{2i}) \\
 &=\quad PE(t,2i)PE(\Delta{t},2i+1)+PE(t,2i+1)PE(\Delta{t},2i) \\
 PE(t+\Delta{t},2i+1)& =\quad PE(t+\Delta{t},2i+1)  \\
 &=\quad cos(t*w_{2i}+\Delta{t}*w_{2i}) \\
 &=\quad cos(t*w_{2i})cos(\Delta{t}*w_{2i})-sin(t*w_{2i})sin(\Delta{t}*w_{2i}) \\
-& =\quad PE(t,2i+1)PE(\Delta{t},2i+1)-PE(t,2i)PE(\Delta{t},2i)  \\
+&=\quad PE(t,2i+1)PE(\Delta{t},2i+1)-PE(t,2i)PE(\Delta{t},2i)  \\
 \end{aligned}
 $$
 
@@ -417,10 +417,17 @@ $$
 
 There are still many other positional encoding methods, but we only did experiments on Sinusoidal Positional Encoding, Learnable Positional Encoding, and RoPE so far.
 
+## Experiments
 
-## Train, Inference and Test Commands
+For all config, we use the same hyperparameters as the original Transformer, which is 6 encoder and decoder layers, 8 heads, 512 embedding dimensions, 2048 feedforward size, 0.1 dropout.
 
-### Sinusoidal Positional Encoding
+We trained all the models with 20 epochs. For the training config, different from the original Transformer, we use the epoch-based training strategy, which is more common in practice. And we utilized Adam optimizer with a base learning rate of 0.0003, a lambda learning rate scheduler with warmup epoches of 6, then with a exponential decay lambda. More details can be found in `train.py`. config files are in the `configs` folder.
+
+Also we trained all the configs for 3 times and choose the best one for analysis below.
+
+### Train, Inference and Test Commands
+
+#### Sinusoidal Positional Encoding
 
 ```bash
 # training
@@ -431,7 +438,7 @@ python inference.py --config configs/transformer_512dh8_e6d6_epochbased_sinusoid
 python test.py --config configs/transformer_512dh8_e6d6_epochbased_sinusoidal.py --model_path runs/transformer_512dh8_e6d6_epochbased_sinusoidal_20240515_224821/checkpoints/best_checkpoint_checkpoint_19_loss=-2.1470.pt
 ```
 
-### Learnable Positional Encoding
+#### Learnable Positional Encoding
 
 ```bash
 # training
@@ -442,7 +449,7 @@ python inference.py --config configs/transformer_512dh8_e6d6_epochbased_learnabl
 python test.py --config configs/transformer_512dh8_e6d6_epochbased_learnable.py --model_path runs/transformer_512dh8_e6d6_epochbased_learnable_20240516_102957/checkpoints/best_checkpoint_checkpoint_20_loss=-2.2404.pt
 ```
 
-### Rotary Positional Encoding(RoPE)
+#### Rotary Positional Encoding(RoPE)
 
 ```bash
 # training
@@ -453,7 +460,7 @@ python inference.py --config configs/transformer_512dh8_e6d6_epochbased_rope.py 
 python test.py --config configs/transformer_512dh8_e6d6_epochbased_rope.py --model_path runs/transformer_512dh8_e6d6_epochbased_rope_20240516_011720/checkpoints/best_checkpoint_checkpoint_19_loss=-1.7915.pt
 ```
 
-## Train & Evaluation Results
+### Train & Evaluation Results
 
 | Model      | Train Loss   | Validation Loss   | Validation Accuracy   | Test BLEU-4   |
 | ---        | ---          | ---               | ---                   | ---           |
@@ -461,13 +468,17 @@ python test.py --config configs/transformer_512dh8_e6d6_epochbased_rope.py --mod
 | Learnable  | 2.240        | 2.499             | 0.5538                | 0.3717        |
 | RoPE       | 1.857        | 2.304             | 0.5764                | 0.5594        |
 
-## Translate Example Results
+The more detailed logs can be found in the `runs` folder. You can use the `tensorboard` to visualize the logs.
+
+Checkpoints can be downloaded from [here](https://bhpan.buaa.edu.cn/link/AA934A2AB98A0440DEA1C107E85EDAE852), valid until 2024-08-31.
+
+### Translate Example Results
 
 src_text: `"Ce dont vous avez peur n’est jamais aussi grave que ce que vous imaginez. La peur que vous laissez s'accumuler dans votre esprit est pire que la situation qui existe réellement."`
 
 ground_truth: `"What you are afraid of is never as bad as what you imagine. The fear you let build up in your mind is worse than the situation that actually exists"`
 
-### Sinusoidal Positional Encoding
+#### Sinusoidal Positional Encoding
 
 output_texts:
 
@@ -483,7 +494,7 @@ What you never care about yourself, and fear that's worse than the situation tha
 18.3417 What you're never care about, fear that you's fear in your mind is worse than the very much worse than the situation.
 ```
 
-### Learnable Positional Encoding
+#### Learnable Positional Encoding
 
 output_texts:
 
@@ -499,7 +510,7 @@ What you never cares you're going to be thinking, and the situation that you're 
 21.0737 And what you never is the fear that you're going to say, the fear you's going to engage in your mind. worse than the situation.
 ```
 
-### RoPE
+#### RoPE
 
 output_texts:
 
@@ -515,25 +526,27 @@ What you fear is never as severe as you can imagine, the fear that you let it be
 31.2803 What you fear is never as severe as what you can imagine, the fear that you allow to accumulate in your mind is worse than the situation that actually exists. is worse than the fact that exists.
 ```
 
-## Analysis of different Positional Encoding
+### Analysis of different Positional Encoding
 
-We can see that RoPE has the best performance in terms of BLEU-4 score, which can also be sensed from the example translation results.
+We can see that RoPE has the best performance in terms of BLEU-4 score, which can also be sensed apparently from the example translation results.
 
-Here is some visualization of the attention weights of the three models:
+However, considering that the authors of *Attention is All You Need* pointed out that learnable positional encoding should perform almost as well as sinusoidal positional encoding, the BLEU-4 performance of sinusoidal positional encoding here is not as good as expected, although the training loss & accuracy, validation loss are almost the same as learnable positional encoding. It's so strange that we assume that our training config is not good enough, or the model is not converged well.
 
-！！！换图！！！
+Here is some visualization of the attention weights of the three models: (with the same input text in `Translate Example Results`)
 
-### Sinusoidal Positional Encoding
+**Sinusoidal Positional Encoding:**
 
 ![sinusoidal attn](./assets/sinusoidal_attn.png)
 
-### Learnable Positional Encoding
+**Learnable Positional Encoding:**
 
 ![learnable attn](./assets/learnable_attn.png)
 
-### RoPE
+**RoPE:**
 
 ![rope attn](./assets/rope_attn.png)
+
+We can see that the attention weights of RoPE are firstly more focused on the whole sentence to retrieve the context information, then focus on the specific words to get the key information. The attention weights of Learnable Positional Encoding are more focused on the diagonal line, which means the model is more focused on the local information.
 
 ## Supplementary: The implementation of Transformer
 
@@ -541,7 +554,7 @@ We implemented the Transformer Translator ourselves with the help of the origina
 
 The whole structure of out project is as follows:
 
-```bash
+```
 Transformer-FR2EN
 ├── assets: some report assets like images
 ├── configs: the configuration files for training, inference, and testing
@@ -573,23 +586,84 @@ Transformer-FR2EN
 
 **Transformer Wrapper**
 
-The Transformer Wrapper is implemented in `models/transformer.py`. It's the main model file that contains the TranslationTransformer class which will be created in the engine for training, inference, and testing.
-
-Definition:
-```python
-
+The Transformer Wrapper is implemented in `models/transformer.py`. It's the main model file that contains the TranslationTransformer class which will be created in the engine for training, inference, and testing. Definition can be seen in the file.
 
 Here is the flow of the TranslationTransformer class:
+- Word Embedding
+- Positional Encoding (Sinusoidal, Learnable)
+- Transformer Encoder-Decoder
+- Output Linear Layer
 
+**Transformer Backend**
 
-#### Tokenizer
+The Transformer Backend is implemented in `models/transformer_backend.py`. It's the main transformer encoder-decoder file that contains the Transformer class which will be called in the TranslationTransformer class. Definition can be seen in the file.
+
+Here is the flow of the Transformer class:
+- Encoder
+  - Encoder Layer x N
+    - MHA
+    - Residual Connection
+    - FFN
+    - Residual Connection
+- Decoder
+  - Decoder Layer x N
+    - MHA (Masked)
+    - Residual Connection
+    - MHA (Encoder-Decoder Cross Attention)
+    - Residual Connection
+    - FFN
+    - Residual Connection
+
+In each MHA, qk was modified by the positional encoding (RoPE) optionally.
+
+#### Dataset & Tokenizer
+
+The Dataset is implemented in `data/dataset.py`. It's the main dataset file that contains the IWSLT2017 dataset class which will be called in the training script. Definition can be seen in the file.
+
+We pre-tokenized the French-English dataset and cached it in the `data/cache` folder for faster loading during training.
+
+The Tokenizer is implemented in `tokenizer/base_tokenizer.py` and `tokenizer/fr_en_tokenizer.py`. It's the main tokenizer file that contains the Tokenizer class which will be called in the dataset and engine for tokenizing the text data. Definition can be seen in the file.
+
+We used pre-trained tokenizer `Helsinki-NLP/opus-mt-fr-en` from `huggingface` for French-English translation. 
 
 #### Engine
 
+We used torch-ignite as the training engine, which is a high-level library to help with training neural networks in PyTorch. The training, inference, and testing scripts are implemented in `train.py`, `inference.py`, and `test.py`.
+
 #### Training
+
+The training script is implemented in `train.py`. It's the main training file that contains the training script for the Transformer model. Definition can be seen in the file.
+
+The pipeline of the training script is as follows:
+- Load the configuration
+- Load the tokenizer
+- Load the dataset and dataloader
+- Load the model, optimizer, and scheduler (CE Loss, Adam Optimizer, LambdaLR Scheduler)
+- Create the trainer, evaluator engine
+- Create the Logger, Checkpointer, and ProgressBar
+- Train the model
 
 #### Inference
 
+The inference script is implemented in `inference.py`. It's the main inference file used to translate the given text data with the trained Transformer model. We implemented the greedy search and beam search for the inference. Definition can be seen in the file.
+
+The simplified process (greedy search) of the inference script is as follows:
+
+- tokenize the input text
+- use transformer encoder to encode the input into memory
+- initialize the target sequence with the start token
+- loop until the maximum length or the end token is reached
+  - use transformer decoder to decode the target sequence
+  - get the next token with the highest probability along with the memory
+  - append the next token to the target sequence
+- detokenize the target sequence
+
 #### Testing
 
+The testing script is implemented in `test.py`. It's the main testing file used to evaluate the trained Transformer model. We utilized the BLEU-4 score as the evaluation metric. The metric is from the `nltk` library and is calculated on the whole test dataset. Definition can be seen in the file.
+
 #### Visualization
+
+Further more, we visualized the attention weights of the Transformer model, including the Encoder Self-Attention, Decoder Self-Attention, and Encoder-Decoder Cross Attention. We also visualized the sinusoidal positional encoding and learnable positional encoding of our trained model.
+
+More details are in the `Analysis of different Positional Encoding` part of the report.
