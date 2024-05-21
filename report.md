@@ -195,7 +195,7 @@ where $\theta_j=10000^{-2(j-1)/d},j\in[1,2,\ldots,d/2]$, $d$ stands for the dime
 Then the RoPE of $x$ ($x$ can be $q_t$ or $k_t$) is defined as:
 
 $$
-\text{RoPE}(x)=R_{\Theta,t}^d x
+\text{RoPE}^d(x, t)=R_{\Theta,t}^d x
 $$
 
 It can also be written as:
@@ -530,7 +530,7 @@ What you fear is never as severe as you can imagine, the fear that you let it be
 
 ### Analysis of different Positional Encoding
 
-We can see that RoPE has the best performance in terms of BLEU-4 score, which can also be sensed apparently from the example translation results.
+We can see that RoPE has the best performance in terms of BLEU-4 score, which can also be sensed from the example translation results apparently.
 
 However, considering that the authors of *Attention is All You Need* pointed out that learnable positional encoding should perform almost as well as sinusoidal positional encoding, the BLEU-4 performance of sinusoidal positional encoding here is not as good as expected, although the training loss & accuracy, validation loss are almost the same as learnable positional encoding. It's so strange that we assume that our training config is not good enough, or the model is not converged well.
 
