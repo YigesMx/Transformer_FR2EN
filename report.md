@@ -22,6 +22,8 @@ The whole report is organized as follows:
 - Transformer's Linear or FFN only functions on each token independently.
 - Transformer's MHA treats each token equally, that is, it has permutation invariance.
 
+![permutation invariance](./assets/transformer_permutation_invariance.png)
+
 ## Where to Add Positional Encoding
 
 - Add Positional Encoding to the input embeddings. (Original Transformer, BERT, GPT etc.)
