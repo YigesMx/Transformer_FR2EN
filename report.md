@@ -618,6 +618,8 @@ Here is the flow of the Transformer class:
 
 In each MHA, qk was modified by the positional encoding (RoPE) optionally.
 
+Importantly, we compared the performance of our own implementation with the original PyTorch implementation, which is implemented in `models/transformer_ori.py` and `torch.nn.Transformer`. The performance are almost the same, but the original one is more efficient in inference due to the Flash-Attention implementation.
+
 #### Dataset & Tokenizer
 
 The Dataset is implemented in `data/dataset.py`. It's the main dataset file that contains the IWSLT2017 dataset class which will be called in the training script. Definition can be seen in the file.
