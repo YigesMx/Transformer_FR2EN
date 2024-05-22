@@ -152,6 +152,16 @@ Here is the visualization of Learnable Positional Encoding which is from our tra
 
 ![learnable position encoding](./assets/learnable_pos_encoding.png)
 
+We also use MDS algorithm to visualize the positional encoding on the 2D plane: 
+
+![learnable position encoding mds](./assets/learnable_pos_encoding_mds.png)
+
+We can intuitively see that the close positions have 'closer' positional encoding, which indicates that the model can learn the relationship on different positions.
+
+Here is also a image from web which shows the positional encoding of BERT, which shows that the adequately learned learnable positional encoding has a more beautiful pattern:
+
+![bert positional encoding](./assets/bert_position_embedding_vis.png)
+
 #### Implementation
 
 `models/positional_encodings.py`
