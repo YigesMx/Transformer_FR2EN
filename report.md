@@ -51,10 +51,10 @@ The formula of Sinusoidal Positional Encoding is as follows:
 
 $$
 \begin{aligned}
-PE(t,2i) &=\sin(t*w_{2i}) \\
-PE(t,2i+1) &=\cos(t*w_{2i}) \\
-w_{2i} &= \frac{1}{ N^{\frac{2i}d} }\\
-N&=10000
+PE(t, 2i) &= \sin(t * w_{2i}) \\
+PE(t, 2i+1) &= \cos(t * w_{2i}) \\
+w_{2i} &= \frac{1}{ N^{\frac{2i}{d}} }\\
+N &= 10000
 \end{aligned}
 $$
 
