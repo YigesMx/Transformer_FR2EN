@@ -115,10 +115,10 @@ $$
 
 $$
 \begin{aligned}
-PE(t)PE(t+\Delta{t}) &= \sum_{i=0}^{i=d/2-1}\sin(t*w_{2i})\sin((t+\Delta{t})*w_{2i})+\sum_{i=0}^{i=d/2-1}\cos(t*w_{2i})\cos((t+\Delta{t})*u  \\
-&= \sum_{i=0}^{i=d/2-1}\sin(t*w_{2i})\sin((t+\Delta{t})*w_{2i})+\cos(t*w_{2i})\cos((t+\Delta{t})*w_{2i})  \\
-&= \sum_{i=0}^{i=d/2-1}\cos((t-(t+\Delta{t}))*w_{2i})  \\
-&= \sum_{i=0}^{i=d/2-1}\cos(\Delta{t}*w_{2i})
+PE(t) PE(t + \Delta{t}) &= \sum_{i=0}^{i=d/2-1} \sin(t * w_{2i}) \sin((t + \Delta{t}) * w_{2i}) + \sum_{i=0}^{i=d/2-1} \cos(t * w_{2i}) \cos((t + \Delta{t}) * u  \\
+&= \sum_{i=0}^{i=d/2-1} \sin(t * w_{2i}) \sin((t + \Delta{t}) * w_{2i}) + \cos(t * w_{2i}) \cos((t + \Delta{t}) * w_{2i})  \\
+&= \sum_{i=0}^{i=d/2-1} \cos((t - (t + \Delta{t})) * w_{2i})  \\
+&= \sum_{i=0}^{i=d/2-1} \cos(\Delta{t} * w_{2i})
 \end{aligned}
 $$
 
