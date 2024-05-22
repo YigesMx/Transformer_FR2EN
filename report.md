@@ -197,15 +197,15 @@ RoPE functions after the Q-K projection in the MHA module, which is different fr
 The rotary positional encoding of position $t$ is defined as a rotation matrix $R^d_{\Theta, t}$:
 
 $$
-\boldsymbol{R}\\_{\Theta , t}^{d} = 
+\boldsymbol{R} _{\Theta , t}^{d} = 
 \begin{pmatrix}
-\cos{t \theta\\_{1} } & -\sin{t \theta\\_{1} } & 0 & 0 & \cdots & 0 & 0 \\
-\sin{t \theta\\_{1} } & \cos{t \theta\\_{1} } & 0 & 0 & \cdots & 0 & 0 \\
-0 & 0 & \cos{t \theta\\_{2} } & -\sin{t \theta\\_{2} } & \cdots & 0 & 0 \\
-0 & 0 & \sin{t \theta\\_{2} } & \cos{t \theta\\_{2} } & \cdots & 0 & 0 \\
+\cos{t \theta _{1} } & -\sin{t \theta _{1} } & 0 & 0 & \cdots & 0 & 0 \\
+\sin{t \theta _{1} } & \cos{t \theta _{1} } & 0 & 0 & \cdots & 0 & 0 \\
+0 & 0 & \cos{t \theta _{2} } & -\sin{t \theta _{2} } & \cdots & 0 & 0 \\
+0 & 0 & \sin{t \theta _{2} } & \cos{t \theta _{2} } & \cdots & 0 & 0 \\
 \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
-0 & 0 & 0 & 0 & \cdots & \cos{t \theta\\_{d/2} } & -\sin{t \theta\\_{d / 2} } \\
-0 & 0 & 0 & 0 & \cdots & \sin{t \theta\\_{d/2} } & \cos{t \theta\\_{d / 2} }
+0 & 0 & 0 & 0 & \cdots & \cos{t \theta _{d/2} } & -\sin{t \theta _{d / 2} } \\
+0 & 0 & 0 & 0 & \cdots & \sin{t \theta _{d/2} } & \cos{t \theta _{d / 2} }
 \end{pmatrix}
 $$
 
