@@ -265,7 +265,7 @@ $$
 
 Just very similar to the Sinusoidal Positional Encoding, so that's why we called RoPE a relative positional encoding with a absolute positional encoding form.
 
-RoPE can be regarded as a rotation operation in each adjacent embedding dimension, which can also be seen as a rotation operation in the complex domain.
+RoPE can be regarded as a rotation operation in each adjacent embedding dimension, which can also be seen as a multiplication operation in the complex domain.
 
 ![rope rotation interpretation](./assets/rope_rotation_interpretation.png)
 
