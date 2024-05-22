@@ -504,8 +504,8 @@ There are also some other positional encoding methods, like:
 
 $$
 \begin{aligned}
-\alpha _{ij} &= \text{softmax} \{x _iW^Q(W^K)^T {x} _{j}^T + {r} _{i,j} \} \\
-z_{i} &= \sum _{j=1}^n\alpha _{ij}x _j W^V
+\alpha _{ij} &= \text{softmax} \{x _i W^Q(W^K)^T {x} _{j}^T + {r} _ {i,j} \} \\
+z _{i} &= \sum _ {j=1}^n\alpha _ {ij}x _ j W^V
 \end{aligned}
 $$
 
