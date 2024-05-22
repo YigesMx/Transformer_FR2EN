@@ -223,43 +223,43 @@ It can also be written as:
 $$
 \boldsymbol{R}_{\Theta,t}^d \boldsymbol{x} = 
 \begin{pmatrix}
-x_1\\
-x_2\\
-x_3\\
-x_4\\
+x _1\\
+x _2\\
+x _3\\
+x _4\\
 \vdots\\
-x_{d-1}\\
-x_d
+x _{d-1}\\
+x _d
 \end{pmatrix}
 \otimes
 \begin{pmatrix}
-\cos t\theta_1\\
-\cos t\theta_1\\
-\cos t\theta_2\\
-\cos t\theta_2\\
+\cos t\theta _1\\
+\cos t\theta _1\\
+\cos t\theta _2\\
+\cos t\theta _2\\
 \vdots\\
-\cos t\theta_{d/2}\\
-\cos t\theta_{d/2}
+\cos t\theta _{d/2}\\
+\cos t\theta _{d/2}
 \end{pmatrix}
 +
-\begin{pmatrix}-x_2\\
-x_1\\
--x_4\\
-x_3\\
+\begin{pmatrix}-x _2\\
+x _1\\
+-x _4\\
+x _3\\
 \vdots
 \\
--x_{d-1}\\
-x_d
+-x _{d-1}\\
+x _d
 \end{pmatrix}
 \otimes
 \begin{pmatrix}
-\sin t\theta_1\\
-\sin t\theta_1\\
-\sin t\theta_2\\
-\sin t\theta_2\\
+\sin t\theta _1\\
+\sin t\theta _1\\
+\sin t\theta _2\\
+\sin t\theta _2\\
 \vdots\\
-\sin t\theta_{d/2}\\
-\sin t\theta_{d/2}
+\sin t\theta _{d/2}\\
+\sin t\theta _{d/2}
 \end{pmatrix}
 $$
 
