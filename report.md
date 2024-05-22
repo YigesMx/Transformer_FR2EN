@@ -197,7 +197,16 @@ RoPE functions after the Q-K projection in the MHA module, which is different fr
 The rotary positional encoding of position $t$ is defined as a rotation matrix $R^d_{\Theta, t}$:
 
 $$
-\boldsymbol{R}_{\Theta,t}^d=\begin{pmatrix}\cos t\theta_1&-\sin t\theta_1&0&0&\cdots&0&0\\\sin t\theta_1&\cos t\theta_1&0&0&\cdots&0&0\\0&0&\cos t\theta_2&-\sin t\theta_2&\cdots&0&0\\0&0&\sin t\theta_2&\cos t\theta_2&\cdots&0&0\\\vdots&\vdots&\vdots&\vdots&\ddots&\vdots&\vdots\\0&0&0&0&\cdots&\cos t\theta_{d/2}&-\sin t\theta_{d/2}\\0&0&0&0&\cdots&\sin t\theta_{d/2}&\cos t\theta_{d/2}\end{pmatrix}
+\boldsymbol{R}_{\Theta,t}^d = 
+\begin{pmatrix}
+\cos{t \theta_1} & -\sin{t \theta_1} & 0 & 0 & \cdots & 0 & 0 \\
+\sin{t \theta_1} & \cos{t \theta_1} & 0 & 0 & \cdots & 0 & 0 \\
+0 & 0 & \cos{t \theta_2} & -\sin{t \theta_2} & \cdots & 0 & 0 \\
+0 & 0 & \sin{t \theta_2} & \cos{t \theta_2} & \cdots & 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & \cos{t \theta_{d/2}} & -\sin{t \theta_{d/2}} \\
+0 & 0 & 0 & 0 & \cdots & \sin{t \theta_{d/2}} & \cos{t \theta_{d/2}}
+\end{pmatrix}
 $$
 
 where $\theta_j=10000^{-2(j-1)/d},j\in[1,2,\ldots,d/2]$, $d$ stands for the dimension of the embedding, and $t$ is the position in the sequence.
@@ -210,7 +219,48 @@ $$
 
 It can also be written as:
 
-$$\boldsymbol{R}_{\Theta,t}^d\boldsymbol{x}=\begin{pmatrix}x_1\\x_2\\x_3\\x_4\\\vdots\\x_{d-1}\\x_d\end{pmatrix}\otimes\begin{pmatrix}\cos t\theta_1\\\cos t\theta_1\\\cos t\theta_2\\\cos t\theta_2\\\vdots\\\cos t\theta_{d/2}\\\cos t\theta_{d/2}\end{pmatrix}+\begin{pmatrix}-x_2\\x_1\\-x_4\\x_3\\\vdots\\-x_{d-1}\\x_d\end{pmatrix}\otimes\begin{pmatrix}\sin t\theta_1\\\sin t\theta_1\\\sin t\theta_2\\\sin t\theta_2\\\vdots\\\sin t\theta_{d/2}\\\sin t\theta_{d/2}\end{pmatrix}$$
+$$
+\boldsymbol{R}_{\Theta,t}^d \boldsymbol{x} = 
+\begin{pmatrix}
+x_1\\
+x_2\\
+x_3\\
+x_4\\
+\vdots\\
+x_{d-1}\\
+x_d
+\end{pmatrix}
+\otimes
+\begin{pmatrix}
+\cos t\theta_1\\
+\cos t\theta_1\\
+\cos t\theta_2\\
+\cos t\theta_2\\
+\vdots\\
+\cos t\theta_{d/2}\\
+\cos t\theta_{d/2}
+\end{pmatrix}
++
+\begin{pmatrix}-x_2\\
+x_1\\
+-x_4\\
+x_3\\
+\vdots
+\\
+-x_{d-1}\\
+x_d
+\end{pmatrix}
+\otimes
+\begin{pmatrix}
+\sin t\theta_1\\
+\sin t\theta_1\\
+\sin t\theta_2\\
+\sin t\theta_2\\
+\vdots\\
+\sin t\theta_{d/2}\\
+\sin t\theta_{d/2}
+\end{pmatrix}
+$$
 
 Just very similar to the Sinusoidal Positional Encoding, so that's why we called RoPE a relative positional encoding with a absolute positional encoding form.
 
