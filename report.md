@@ -455,10 +455,17 @@ Then we define q-k projection with RoPE as:
 $$\begin{aligned}
 f_{q}(x_t,t)& =(W_q x_t)e^{it\theta}  \\
 &= q_te^{it\theta}  \\
-&= (q_t^{(1)}+iq_t^{(2)})(cos(t\theta)+isin(t\theta))  \\
-&=(q_t^{(1)}cos(t\theta)-q_t^{(2)}sin(t\theta))+i(q_t^{(1)}sin(t\theta)+q_t^{(2)}cos(t\theta))  \\
-&=[q_t^{(1)}cos(t\theta)-q_t^{(2)}sin(t\theta),q_t^{(1)}sin(t\theta)+q_t^{(2)}cos(t\theta)] \\
-&=\begin{pmatrix}cos(t\theta)&-sin(t\theta)\\sin(t\theta)&cos(t\theta)\end{pmatrix}\begin{pmatrix}q_t^{(1)}\\q_t^{(2)}\end{pmatrix}
+&= (q_t^{(1)}+iq_t^{(2)})(\cos(t\theta)+isin(t\theta))  \\
+&=(q_t^{(1)}\cos(t\theta)-q_t^{(2)}\sin(t\theta))+i(q_t^{(1)}\sin(t\theta)+q_t^{(2)}\cos(t\theta))  \\
+&=[q_t^{(1)}\cos(t\theta)-q_t^{(2)}\sin(t\theta),q_t^{(1)}\sin(t\theta)+q_t^{(2)}\cos(t\theta)] \\
+&=\begin{pmatrix}
+\cos(t\theta)&-\sin(t\theta) \\
+\sin(t\theta)&\cos(t\theta)
+\end{pmatrix}
+\begin{pmatrix}
+q_t^{(1)} \\
+q_t^{(2)}
+\end{pmatrix}
 \end{aligned}$$
 
 $f_{k}(x_t,t)$ can be calculated in the same way.
@@ -469,15 +476,15 @@ It can be further proved that the inner product of two query embeddings at diffe
 
 $$
 \begin{aligned}
-f_q(x_m,m) &= [q_m^{(1)}cos(m\theta)-q_m^{(2)}sin(m\theta),q_m^{(1)}sin(m\theta)+q_m^{(2)}cos(m\theta)] \\
-f_k(x_n,n) &= [k_n^{(1)}cos(n\theta)-k_n^{(2)}sin(n\theta),k_n^{(1)}sin(n\theta)+k_n^{(2)}cos(n\theta)]
+f_q(x_m,m) &= [q_m^{(1)}\cos(m\theta)-q_m^{(2)}\sin(m\theta),q_m^{(1)}\sin(m\theta)+q_m^{(2)}\cos(m\theta)] \\
+f_k(x_n,n) &= [k_n^{(1)}\cos(n\theta)-k_n^{(2)}\sin(n\theta),k_n^{(1)}\sin(n\theta)+k_n^{(2)}\cos(n\theta)]
 \end{aligned}
 $$
 
 $$
 \begin{aligned}
-<f_q(x_m,m),f_k(x_n,n)> &=(q_{m}^{(1)}cos(m\theta)-q_{m}^{(2)}sin(m\theta))(k_{n}^{(1)}cos(n\theta)-k_{n}^{(2)}sin(n\theta))\\
-&\quad+(q_{m}^{(1)}sin(m\theta)+q_{m}^{(2)}cos(m\theta))(k_{n}^{(1)}sin(n\theta)+k_{n}^{(2)}cos(n\theta))\\
+<f_q(x_m,m),f_k(x_n,n)> &=(q_{m}^{(1)}\cos(m\theta)-q_{m}^{(2)}\sin(m\theta))(k_{n}^{(1)}\cos(n\theta)-k_{n}^{(2)}\sin(n\theta))\\
+&\quad+(q_{m}^{(1)}\sin(m\theta)+q_{m}^{(2)}\cos(m\theta))(k_{n}^{(1)}\sin(n\theta)+k_{n}^{(2)}\cos(n\theta))\\
 &=q_m^{(1)}\cos(m\theta)k_n^{(1)}\cos(n\theta)-q_m^{(1)}\cos(m\theta)k_n^{(2)}\sin(n\theta) \\
 &\quad-q_m^{(2)}\sin(m\theta)k_n^{(1)}\cos(n\theta)+q_m^{(2)}\sin(m\theta)k_n^{(2)}\sin(n\theta) \\
 &\quad+q_m^{(2)}\cos(m\theta)k_n^{(2)}\cos(n\theta)+q_m^{(2)}\cos(m\theta)k_n^{(1)}\sin(n\theta) \\
