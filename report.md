@@ -197,7 +197,7 @@ RoPE functions after the Q-K projection in the MHA module, which is different fr
 The rotary positional encoding of position $t$ is defined as a rotation matrix $R^d_{\Theta, t}$:
 
 $$
-\boldsymbol{R}_{\Theta, t}^d = 
+\boldsymbol{R}_{\Theta, t}^{d} = 
 \begin{pmatrix}
 \cos{t \theta_{1}} & -\sin{t \theta_{1}} & 0 & 0 & \cdots & 0 & 0 \\
 \sin{t \theta_{1}} & \cos{t \theta_{1}} & 0 & 0 & \cdots & 0 & 0 \\
