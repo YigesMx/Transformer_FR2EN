@@ -462,6 +462,12 @@ python inference.py --config configs/transformer_512dh8_e6d6_epochbased_rope.py 
 python test.py --config configs/transformer_512dh8_e6d6_epochbased_rope.py --model_path runs/transformer_512dh8_e6d6_epochbased_rope_20240516_011720/checkpoints/best_checkpoint_checkpoint_19_loss=-1.7915.pt
 ```
 
+### Validation of the Implementation
+
+Due to the limited time and computing resources, we validated the implementation of the three positional encoding methods by comparing the first few epochs of the training loss and accuracy with the original Transformer implementation. You can also validate the implementation yourself by comparing training logs or investigate the parameters inside trained model. We also further visualized the positional encoding parameters or the attention weights (will be shown below) of the three models to validate the implementation.
+
+All the clues show that the implementation of the three positional encoding methods is correct.
+
 ### Train & Evaluation Results
 
 | Model      | Train Loss   | Validation Loss   | Validation Accuracy   | Test BLEU-4   |
@@ -530,7 +536,7 @@ What you fear is never as severe as you can imagine, the fear that you let it be
 
 ### Analysis of different Positional Encoding
 
-We can see that RoPE has the best performance in terms of BLEU-4 score, which can also be sensed from the example translation results apparently.
+We can see that RoPE has the best performance in terms of BLEU-4 score, which can also be sensed from the example translation results apparently. Sinusoidal Positional Encoding and Learnable Positional Encoding have similar performance. They did translated some phrases correctly, but the overall translation is not very good, considering the overall meaning of the sentence. While RoPE has a much better translation result, which is more close to the ground truth apparently.
 
 However, considering that the authors of *Attention is All You Need* pointed out that learnable positional encoding should perform almost as well as sinusoidal positional encoding, the BLEU-4 performance of sinusoidal positional encoding here is not as good as expected, although the training loss & accuracy, validation loss are almost the same as learnable positional encoding. It's so strange that we assume that our training config is not good enough, or the model is not converged well.
 
@@ -540,15 +546,21 @@ Here is some visualization of the attention weights of the three models: (with t
 
 ![sinusoidal attn](./assets/sinusoidal_attn.png)
 
+It can be found that the Self Attention of Encoder and Decoder in Sinusoidal PE is mainly concentrated on the diagonal, which means that the model mainly focuses on local information and does not extract global features very well. It can be seen that in Cross Attention, the model already worked very hard to integrate global information. For example, these vertical bars can be interpreted as that all tokens are paying attention to this token, which may be the semantics of the entire sentence. But the results isn't very good, which is consistent with the test results.
+
+The results of this visualization are also consistent with the test results.
+
 **Learnable Positional Encoding:**
 
 ![learnable attn](./assets/learnable_attn.png)
+
+The problems of Sinusoidal Positional Encoding are also reflected in Learnable Positional Encoding. The model is also more focused on the local information, which is consistent with the characteristics of the test results.
 
 **RoPE:**
 
 ![rope attn](./assets/rope_attn.png)
 
-We can see that the attention weights of RoPE are firstly more focused on the whole sentence to retrieve the context information, then focus on the specific words to get the key information. The attention weights of Learnable Positional Encoding are more focused on the diagonal line, which means the model is more focused on the local information.
+We can see that the attention weights of RoPE are firstly more focused on the whole sentence to retrieve the context information, then focus on the specific words to get the key information. The beautiful attention weights are also consistent with the test results.
 
 ## Supplementary: The implementation of Transformer
 
