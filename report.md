@@ -368,7 +368,7 @@ The motivation of RoPE is based on the properties of Euler's formula, as shown b
 
 $$
 \begin{aligned}
-e^{im}*\overline{e^{in}}&=\quad(cos(m)+isin(m))*(cos(n)-isin(n)) \\ 
+e^{im}*\overline{e^{in}}&=\quad(cos(m)+isin(m))*(cos(n)-isin(n)) \\
 &=\quad cos(m)cos(n)+sin(m)sin(n)+i(sin(m)cos(n)-cos(m)sin(n))) \\
 &=\quad cos(m-n)+isin(m-n) \\
 &=\quad e^{i(m-n)}
@@ -379,7 +379,20 @@ That's to say, for example, when we only consider the first 2 adjacent dimension
 
 $$
 \begin{aligned}
-&q_t=\begin{pmatrix}q_t^{(1)} \\ q_t^{(2)}\end{pmatrix}=W_qx_t=\begin{pmatrix}W_q^{(11)}&W_q^{(12)} \\ W_q^{(21)}&W_q^{(22)}\end{pmatrix}\begin{pmatrix}x_t^{(1)} \\ x_t^{(2)}\end{pmatrix} \\
+&q_t=
+\begin{pmatrix}
+q_t^{(1)} \\
+q_t^{(2)}
+\end{pmatrix}
+= W_q x_t =
+\begin{pmatrix}
+W_q^{(11)} &W_q^{(12)} \\
+W_q^{(21)} &W_q^{(22)}
+\end{pmatrix}
+\begin{pmatrix}
+x_t^{(1)} \\
+x_t^{(2)}
+\end{pmatrix} \\
 &q_t=[q_t^{(1)},q_t^{(2)}]=[q_t^{(1)}+iq_t^{(2)}]
 \end{aligned}
 $$
