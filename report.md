@@ -152,7 +152,7 @@ Here is the visualization of Learnable Positional Encoding which is from our tra
 
 ![learnable position encoding](./assets/learnable_pos_encoding.png)
 
-We also use MDS algorithm to visualize the positional encoding on the 2D plane: 
+We also use MDS algorithm to visualize the positional encoding on the 2D plane: (the closer the positions, the similar the color, then using the mds algorithm to project the high-dimensional positional encoding to the 2D plane which can reflect the distance relationship between the positions to some extent)
 
 ![learnable position encoding mds](./assets/learnable_pos_encoding_mds.png)
 
