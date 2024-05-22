@@ -102,12 +102,12 @@ $$
 \begin{aligned}
 PE(t+\Delta{t}, 2i) &= PE(t+\Delta{t}, 2i) \\
 &= \sin(t * w_{2i} + \Delta{t} * w_{2i}) \\
-&= \sin(t * w_{2i}) \cos(\Delta{t}*w_{2i}) + \cos(t*w_{2i}) \sin(\Delta{t}*w_{2i}) \\
+&= \sin(t * w_{2i}) \cos(\Delta{t} * w_{2i}) + \cos(t * w_{2i}) \sin(\Delta{t} * w_{2i}) \\
 &= PE(t,2i) PE(\Delta{t}, 2i+1) + PE(t, 2i+1) PE(\Delta{t}, 2i) \\
 PE(t+\Delta{t}, 2i+1) &= PE(t+\Delta{t}, 2i+1)  \\
 &= \cos(t * w_{2i} + \Delta{t} * w_{2i}) \\
-&= \cos(t * w_{2i})\cos(\Delta{t} * w_{2i})-\sin(t * w_{2i})\sin(\Delta{t} * w_{2i}) \\
-&= PE(t, 2i+1) PE(\Delta{t}, 2i+1) - PE(t,2i) PE(\Delta{t}, 2i)  \\
+&= \cos(t * w_{2i})\cos(\Delta{t} * w_{2i}) - \sin(t * w_{2i})\sin(\Delta{t} * w_{2i}) \\
+&= PE(t, 2i+1) PE(\Delta{t}, 2i+1) - PE(t, 2i) PE(\Delta{t}, 2i)  \\
 \end{aligned}
 $$
 
