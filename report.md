@@ -368,10 +368,10 @@ The motivation of RoPE is based on the properties of Euler's formula, as shown b
 
 $$
 \begin{aligned}
-e^{im}*\overline{e^{in}}&=\quad(cos(m)+isin(m))*(cos(n)-isin(n)) \\
-&=\quad cos(m)cos(n)+sin(m)sin(n)+i(sin(m)cos(n)-cos(m)sin(n))) \\
-&=\quad cos(m-n)+isin(m-n) \\
-&=\quad e^{i(m-n)}
+e^{im}*\overline{e^{in}} &= (cos(m)+isin(m))*(cos(n)-isin(n)) \\
+&= cos(m)cos(n)+sin(m)sin(n)+i(sin(m)cos(n)-cos(m)sin(n))) \\
+&= cos(m-n)+isin(m-n) \\
+&= e^{i(m-n)}
 \end{aligned}
 $$
 
