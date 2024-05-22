@@ -51,9 +51,9 @@ The formula of Sinusoidal Positional Encoding is as follows:
 
 $$
 \begin{aligned}
-PE(t,2i)&=sin(t*w_{2i}) \\
-PE(t,2i+1)&=cos(t*w_{2i}) \\
-w_{2i}&=\frac1{N^{\frac{2i}d}}\\
+PE(t,2i) &=\sin(t*w_{2i}) \\
+PE(t,2i+1) &=\cos(t*w_{2i}) \\
+w_{2i} &= \frac{1}{ N^{\frac{2i}d} }\\
 N&=10000
 \end{aligned}
 $$
@@ -100,14 +100,14 @@ The Sinusoidal Positional Encoding is a fixed positional encoding, which is not 
 
 $$
 \begin{aligned}
-PE(t+\Delta{t},2i)& =\quad PE(t+\Delta{t},2i) \\
-&=\quad sin(t*w_{2i}+\Delta{t}*w_{2i}) \\
-&=\quad sin(t*w_{2i})cos(\Delta{t}*w_{2i})+cos(t*w_{2i})sin(\Delta{t}*w_{2i}) \\
-&=\quad PE(t,2i)PE(\Delta{t},2i+1)+PE(t,2i+1)PE(\Delta{t},2i) \\
-PE(t+\Delta{t},2i+1)& =\quad PE(t+\Delta{t},2i+1)  \\
-&=\quad cos(t*w_{2i}+\Delta{t}*w_{2i}) \\
-&=\quad cos(t*w_{2i})cos(\Delta{t}*w_{2i})-sin(t*w_{2i})sin(\Delta{t}*w_{2i}) \\
-&=\quad PE(t,2i+1)PE(\Delta{t},2i+1)-PE(t,2i)PE(\Delta{t},2i)  \\
+PE(t+\Delta{t},2i) &= PE(t+\Delta{t},2i) \\
+&= \sin(t*w_{2i}+\Delta{t}*w_{2i}) \\
+&= \sin(t*w_{2i})cos(\Delta{t}*w_{2i})+\cos(t*w_{2i})\sin(\Delta{t}*w_{2i}) \\
+&= PE(t,2i)PE(\Delta{t},2i+1)+PE(t,2i+1)PE(\Delta{t},2i) \\
+PE(t+\Delta{t},2i+1) &= PE(t+\Delta{t},2i+1)  \\
+&= \cos(t*w_{2i}+\Delta{t}*w_{2i}) \\
+&= \cos(t*w_{2i})\cos(\Delta{t}*w_{2i})-\sin(t*w_{2i})\sin(\Delta{t}*w_{2i}) \\
+&= PE(t,2i+1)PE(\Delta{t},2i+1)-PE(t,2i)PE(\Delta{t},2i)  \\
 \end{aligned}
 $$
 
@@ -115,10 +115,10 @@ $$
 
 $$
 \begin{aligned}
-PE(t)PE(t+\Delta{t}) &= \sum_{i=0}^{i=d/2-1}sin(t*w_{2i})sin((t+\Delta{t})*w_{2i})+\sum_{i=0}^{i=d/2-1}cos(t*w_{2i})cos((t+\Delta{t})*u  \\
-&= \sum_{i=0}^{i=d/2-1}sin(t*w_{2i})sin((t+\Delta{t})*w_{2i})+cos(t*w_{2i})cos((t+\Delta{t})*w_{2i})  \\
-&= \sum_{i=0}^{i=d/2-1}cos((t-(t+\Delta{t}))*w_{2i})  \\
-&= \sum_{i=0}^{i=d/2-1}cos(\Delta{t}*w_{2i})
+PE(t)PE(t+\Delta{t}) &= \sum_{i=0}^{i=d/2-1}\sin(t*w_{2i})\sin((t+\Delta{t})*w_{2i})+\sum_{i=0}^{i=d/2-1}\cos(t*w_{2i})\cos((t+\Delta{t})*u  \\
+&= \sum_{i=0}^{i=d/2-1}\sin(t*w_{2i})\sin((t+\Delta{t})*w_{2i})+\cos(t*w_{2i})\cos((t+\Delta{t})*w_{2i})  \\
+&= \sum_{i=0}^{i=d/2-1}\cos((t-(t+\Delta{t}))*w_{2i})  \\
+&= \sum_{i=0}^{i=d/2-1}\cos(\Delta{t}*w_{2i})
 \end{aligned}
 $$
 
