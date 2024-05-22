@@ -467,7 +467,8 @@ We can tell that it just means we rotate the 2D $q_t$ by $\theta$ in the complex
 
 It can be further proved that the inner product of two query embeddings at different position ($m$ and $n$) after applying position coding is only related to the relative position $(m-n)$:
 
-$$f_q(x_m,m)=[q_m^{(1)}cos(m\theta)-q_m^{(2)}sin(m\theta),q_m^{(1)}sin(m\theta)+q_m^{(2)}cos(m\theta)]\\f_k(x_n,n)=[k_n^{(1)}cos(n\theta)-k_n^{(2)}sin(n\theta),k_n^{(1)}sin(n\theta)+k_n^{(2)}cos(n\theta)]$$
+$$f_q(x_m,m)=[q_m^{(1)}cos(m\theta)-q_m^{(2)}sin(m\theta),q_m^{(1)}sin(m\theta)+q_m^{(2)}cos(m\theta)]\\
+f_k(x_n,n)=[k_n^{(1)}cos(n\theta)-k_n^{(2)}sin(n\theta),k_n^{(1)}sin(n\theta)+k_n^{(2)}cos(n\theta)]$$
 
 $$\begin{aligned}
 <f_q(x_m,m),f_k(x_n,n)> &=(q_{m}^{(1)}cos(m\theta)-q_{m}^{(2)}sin(m\theta))(k_{n}^{(1)}cos(n\theta)-k_{n}^{(2)}sin(n\theta))\\
@@ -496,7 +497,8 @@ There are also some other positional encoding methods, like:
 - ALiBi: Adaptive Linearized Bi-directional Positional Encoding, which is proposed by [Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation](https://arxiv.org/abs/2108.12409). It functions on the Q-K inner product and before the softmax operation in the MHA module. ALiBi adds a linear bias term to the Q-K inner product regarding the relative position and distance, which can enable the model to extrapolate to longer sequences.
 - Relative: Relative Positional Encoding. There are tons of variants of relative positional encoding, but all of them are based on the relative position between two tokens, and functions on the Q-K projections or the attention map in the MHA module. For example, the T5 uses a learnable relative positional encoding: (where $i$ is the position of the query token, $j$ is the position of the key token, $x$ is the token embedding, $r$ is the relative position encoding)
 $$
-\begin{aligned}\alpha_{ij}&=\text{softmax}\{x_iW^Q(W^K)^Tx_j^T+r_{i,j}\}\\z_{i}&=\sum_{j=1}^n\alpha_{ij}x_jW^V\end{aligned}
+\begin{aligned}\alpha _{ij}&=\text{softmax}\{x _iW^Q(W^K)^T x _j^T + r _{i,j}\}\\
+z_{i}&=\sum _{j=1}^n\alpha _{ij}x_jW^V\end{aligned}
 $$
 
 There are still many other positional encoding methods, but we only did experiments on Sinusoidal Positional Encoding, Learnable Positional Encoding, and RoPE so far.
