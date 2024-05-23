@@ -7,9 +7,6 @@ import copy
 
 from .positional_encodings import precompute_freqs_cis, apply_rotary_emb
 
-is_print_shape = False
-is_RoPE = False
-
 class Transformer(nn.Module):
     def __init__(self, d_model=512, nhead=8, num_encoder_layers=6,
                  num_decoder_layers=6, dim_feedforward=2048, dropout=0.1, qkv_pos='none', seq_len=256
@@ -17,12 +14,15 @@ class Transformer(nn.Module):
         super(Transformer, self).__init__()
 
         """
-        :param d_model:  d_k = d_v = d_model/nhead = 64, 模型中向量的维度，论文默认值为 512
-        :param nhead:               多头注意力机制中多头的数量，论文默认为值 8
-        :param num_encoder_layers:  encoder堆叠的数量，也就是论文中的N，论文默认值为6
-        :param num_decoder_layers:  decoder堆叠的数量，也就是论文中的N，论文默认值为6
-        :param dim_feedforward:     全连接中向量的维度，论文默认值为 2048
-        :param dropout:             丢弃率，论文中的默认值为 0.1
+        Args:
+            d_model: int, 模型的维度大小
+            nhead: int, 多头注意力的头数
+            num_encoder_layers: int, 编码器的层数
+            num_decoder_layers: int, 解码器的层数
+            dim_feedforward: int, 前馈神经网络的隐层维度
+            dropout: float, dropout概率
+            qkv_pos: str, QKV的位置编码类型，'rope', 'none'
+            seq_len: int, 序列的最长长度
         """
 
         #  ================ 编码部分 =====================
@@ -51,7 +51,6 @@ class Transformer(nn.Module):
             pass
 
     def _reset_parameters(self):
-        r"""Initiate parameters in the transformer model."""
         """
         初始化
         """
@@ -63,15 +62,17 @@ class Transformer(nn.Module):
                 memory_mask=None, src_key_padding_mask=None,
                 tgt_key_padding_mask=None, memory_key_padding_mask=None):
         """
-        :param src:   [src_len,batch_size,embed_dim]
-        :param tgt:  [tgt_len, batch_size, embed_dim]
-        :param src_mask:  None
-        :param tgt_mask:  [tgt_len, tgt_len]
-        :param memory_mask: None
-        :param src_key_padding_mask: [batch_size, src_len]
-        :param tgt_key_padding_mask: [batch_size, tgt_len]
-        :param memory_key_padding_mask:  [batch_size, src_len]
-        :return: [tgt_len, batch_size, num_heads * kdim] <==> [tgt_len,batch_size,embed_dim]
+        Args:
+            src: Tensor, 源语言序列，[src_len, batch_size, embed_dim]
+            tgt: Tensor, 目标语言序列，[tgt_len, batch_size, embed_dim]
+            src_mask: Tensor, Encoder Self-Attention 的 mask，[src_len, src_len]
+            tgt_mask: Tensor, Decoder Self-Attention 的 mask，[tgt_len, tgt_len]
+            memory_mask: Tensor, Decoder-Encoder Cross-Attention 的 mask，[tgt_len, src_len]
+            src_key_padding_mask: Tensor, Encoder Self-Attention 的 key padding mask，[batch_size, src_len]
+            tgt_key_padding_mask: Tensor, Decoder Self-Attention 的 key padding mask，[batch_size, tgt_len]
+            memory_key_padding_mask: Tensor, Decoder-Encoder Cross-Attention 的 key padding mask，[batch_size, src_len]
+        Returns:
+            output: Tensor, 模型的输出，[tgt_len, batch_size, embed_dim]
         """
         memory = self.encoder(src, mask=src_mask, src_key_padding_mask=src_key_padding_mask, freqs_cis=self.freqs_cis)
         # [src_len, batch_size, num_heads * kdim] <==> [src_len,batch_size,embed_dim]
@@ -80,27 +81,36 @@ class Transformer(nn.Module):
                               memory_key_padding_mask=memory_key_padding_mask, freqs_cis=self.freqs_cis)
         return output  # [tgt_len, batch_size, num_heads * kdim] <==> [tgt_len,batch_size,embed_dim]
 
-    def generate_square_subsequent_mask(self, sz):
-        r"""Generate a square mask for the sequence. The masked positions are filled with float('-inf').
-            Unmasked positions are filled with float(0.0).
-        """
-        mask = (torch.triu(torch.ones(sz, sz)) == 1).transpose(0, 1)
-        mask = mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
-        return mask  # [sz,sz]
+    # def generate_square_subsequent_mask(self, sz):
+    #     r"""Generate a square mask for the sequence. The masked positions are filled with float('-inf').
+    #         Unmasked positions are filled with float(0.0).
+    #     """
+    #     mask = (torch.triu(torch.ones(sz, sz)) == 1).transpose(0, 1)
+    #     mask = mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
+    #     return mask  # [sz,sz]
 
 def _get_clones(module, N):
+    """
+    克隆多个相同的层
+
+    Args:
+        module: nn.Module, 一个层
+        N: int, 克隆的数量
+    Returns:
+        nn.ModuleList, 克隆的多个层
+    """
     return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 
 class TransformerEncoderLayer(nn.Module):
     def __init__(self, d_model, nhead, dim_feedforward=2048, dropout=0.1, qkv_pos='none'):
         super(TransformerEncoderLayer, self).__init__()
         """
-        :param d_model:         d_k = d_v = d_model/nhead = 64, 模型中向量的维度，论文默认值为 512
-        :param nhead:           多头注意力机制中多头的数量，论文默认为值 8
-        :param dim_feedforward: 全连接中向量的维度，论文默认值为 2048
-        :param dropout:         丢弃率，论文中的默认值为 0.1    
-        
-        
+        Args:
+            d_model: int, 模型的维度大小
+            nhead: int, 多头注意力的头数
+            dim_feedforward: int, 前馈神经网络的隐层维度
+            dropout: float, dropout概率
+            qkv_pos: str, QKV的位置编码类型，'rope', 'none'
         """
         self.self_attn = MultiheadAttention(d_model, nhead, dropout=dropout, qkv_pos=qkv_pos)
 
@@ -118,10 +128,13 @@ class TransformerEncoderLayer(nn.Module):
 
     def forward(self, src, src_mask=None, src_key_padding_mask=None, freqs_cis=None):
         """
-        :param src: 编码部分的输入，形状为 [src_len,batch_size, embed_dim]
-        :param src_mask:  None
-        :param src_key_padding_mask:  编码部分输入的padding情况，形状为 [batch_size, src_len]
-        :return
+        Args:
+            src: Tensor, 编码部分的输入，[src_len, batch_size, embed_dim]
+            src_mask: Tensor, Encoder Self-Attention 的 mask，[src_len, src_len]
+            src_key_padding_mask: Tensor, Encoder Self-Attention 的 key padding mask，[batch_size, src_len]
+            freqs_cis: Tensor, 旋转位置编码，[seq_len, dim]
+        Returns:
+            src: Tensor, 编码部分的输出，[src_len, batch_size, embed_dim]
         """
         src2 = self.self_attn(src, src, src, attn_mask=src_mask,
                               key_padding_mask=src_key_padding_mask, freqs_cis=freqs_cis
@@ -141,10 +154,10 @@ class TransformerEncoder(nn.Module):
     def __init__(self, encoder_layer, num_layers, norm=None):
         super(TransformerEncoder, self).__init__()
         """
-        encoder_layer: 就是包含有多头注意力机制的一个编码层
-        num_layers: 克隆得到多个encoder layers 论文中默认为6
-        norm: 归一化层
-        
+        Args:
+            encoder_layer: nn.Module, 编码层
+            num_layers: int, 编码层的数量
+            norm: nn.Module, 归一化层
         """
         self.layers = _get_clones(encoder_layer, num_layers)  # 克隆得到多个encoder layers 论文中默认为6
         self.num_layers = num_layers
@@ -152,9 +165,13 @@ class TransformerEncoder(nn.Module):
 
     def forward(self, src, mask=None, src_key_padding_mask=None, freqs_cis=None):
         """
-        :param src: 编码部分的输入，形状为 [src_len,batch_size, embed_dim]
-        :param mask:  编码部分输入的padding情况，形状为 [batch_size, src_len]
-        :return:# [src_len, batch_size, num_heads * kdim] <==> [src_len,batch_size,embed_dim]
+        Args:
+            src: Tensor, 编码部分的输入，[src_len, batch_size, embed_dim]
+            mask: Tensor, 编码部分输入的padding情况，[batch_size, src_len]
+            src_key_padding_mask: Tensor, 编码部分输入的padding情况，[batch_size, src_len]
+            freqs_cis: Tensor, 旋转位置编码，[seq_len, dim]
+        Returns:
+            output: Tensor, 编码部分的输出，[src_len, batch_size, embed_dim]
         """
         output = src
         for mod in self.layers:
@@ -168,10 +185,12 @@ class TransformerDecoderLayer(nn.Module):
     def __init__(self, d_model, nhead, dim_feedforward=2048, dropout=0.1, qkv_pos='none'):
         super(TransformerDecoderLayer, self).__init__()
         """
-        :param d_model:         d_k = d_v = d_model/nhead = 64, 模型中向量的维度，论文默认值为 512
-        :param nhead:           多头注意力机制中多头的数量，论文默认为值 8
-        :param dim_feedforward: 全连接中向量的维度，论文默认值为 2048
-        :param dropout:         丢弃率，论文中的默认值为 0.1    
+        Args:
+            d_model: int, 模型的维度大小
+            nhead: int, 多头注意力的头数
+            dim_feedforward: int, 前馈神经网络的隐层维度
+            dropout: float, dropout概率
+            qkv_pos: str, QKV的位置编码类型，'rope', 'none'
         """
         self.self_attn = MultiheadAttention(embed_dim=d_model, num_heads=nhead, dropout=dropout, qkv_pos=qkv_pos)
         # 解码部分输入序列之间的多头注意力（也就是论文结构图中的Masked Multi-head attention)
@@ -195,13 +214,16 @@ class TransformerDecoderLayer(nn.Module):
     def forward(self, tgt, memory, tgt_mask=None, memory_mask=None, tgt_key_padding_mask=None,
                 memory_key_padding_mask=None, freqs_cis=None):
         """
-        :param tgt:  解码部分的输入，形状为 [tgt_len,batch_size, embed_dim]
-        :param memory: 编码部分的输出（memory）, [src_len,batch_size,embed_dim]
-        :param tgt_mask: 注意力Mask输入，用于掩盖当前position之后的信息, [tgt_len, tgt_len]
-        :param memory_mask: 编码器-解码器交互时的注意力掩码，一般为None
-        :param tgt_key_padding_mask: 解码部分输入的padding情况，形状为 [batch_size, tgt_len]
-        :param memory_key_padding_mask: 编码部分输入的padding情况，形状为 [batch_size, src_len]
-        :return:
+        Args:
+            tgt: Tensor, 解码部分的输入，[tgt_len, batch_size, embed_dim]
+            memory: Tensor, 编码部分的输出，[src_len, batch_size, embed_dim]
+            tgt_mask: Tensor, Decoder Self-Attention 的 mask，[tgt_len, tgt_len]
+            memory_mask: Tensor, Decoder-Encoder Cross-Attention 的 mask，[tgt_len, src_len]
+            tgt_key_padding_mask: Tensor, Decoder Self-Attention 的 key padding mask，[batch_size, tgt_len]
+            memory_key_padding_mask: Tensor, Decoder-Encoder Cross-Attention 的 key padding mask，[batch_size, src_len]
+            freqs_cis: Tensor, 旋转位置编码，[seq_len, dim]
+        Returns:
+            tgt: Tensor, 解码部分的输出，[tgt_len, batch_size, embed_dim]
         """
         tgt2 = self.self_attn(tgt, tgt, tgt,  # [tgt_len,batch_size, embed_dim]
                               attn_mask=tgt_mask,
@@ -237,13 +259,16 @@ class TransformerDecoder(nn.Module):
     def forward(self, tgt, memory, tgt_mask=None, memory_mask=None, tgt_key_padding_mask=None,
                 memory_key_padding_mask=None, freqs_cis=None):
         """
-        :param tgt: 解码部分的输入，形状为 [tgt_len,batch_size, embed_dim]
-        :param memory: 编码部分最后一层的输出 [src_len,batch_size, embed_dim]
-        :param tgt_mask: 注意力Mask输入，用于掩盖当前position之后的信息, [tgt_len, tgt_len]
-        :param memory_mask: 编码器-解码器交互时的注意力掩码，一般为None
-        :param tgt_key_padding_mask: 解码部分输入的padding情况，形状为 [batch_size, tgt_len]
-        :param memory_key_padding_mask: 编码部分输入的padding情况，形状为 [batch_size, src_len]
-        :return:
+        Args:
+            tgt: Tensor, 解码部分的输入，[tgt_len, batch_size, embed_dim]
+            memory: Tensor, 编码部分的输出，[src_len, batch_size, embed_dim]
+            tgt_mask: Tensor, Decoder Self-Attention 的 mask，[tgt_len, tgt_len]
+            memory_mask: Tensor, Decoder-Encoder Cross-Attention 的 mask，[tgt_len, src_len]
+            tgt_key_padding_mask: Tensor, Decoder Self-Attention 的 key padding mask，[batch_size, tgt_len]
+            memory_key_padding_mask: Tensor, Decoder-Encoder Cross-Attention 的 key padding mask，[batch_size, src_len]
+            freqs_cis: Tensor, 旋转位置编码，[seq_len, dim]
+        Returns:
+            output: Tensor, 解码部分的输出，[tgt_len, batch_size, embed_dim]
         """
         output = tgt  # [tgt_len,batch_size, embed_dim]
 
@@ -260,20 +285,23 @@ class TransformerDecoder(nn.Module):
 
 
 class MultiheadAttention(nn.Module):
-    """
-    多头注意力机制的计算公式为（就是论文第5页的公式）：
-    .. math::
+    r"""
+    多头注意力机制，计算公式为：
+    ```math
         \text{MultiHead}(Q, K, V) = \text{Concat}(head_1,\dots,head_h)W^O
         \text{where} head_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
+    ```
     """
 
     def __init__(self, embed_dim, num_heads, dropout=0., bias=True, qkv_pos='none'):
         super(MultiheadAttention, self).__init__()
         """
-        :param embed_dim:   词嵌入的维度，也就是前面的d_model参数，论文中的默认值为512
-        :param num_heads:   多头注意力机制中多头的数量，也就是前面的nhead参数， 论文默认值为 8
-        :param dropout:     
-        :param bias:        最后对多头的注意力（组合）输出进行线性变换时，是否使用偏置
+        Args:
+            embed_dim: int, 词嵌入的维度
+            num_heads: int, 多头注意力的头数
+            dropout: float, dropout概率
+            bias: bool, 是否使用偏置
+            qkv_pos: str, QKV的位置编码类型，'rope', 'none'
         """
         self.embed_dim = embed_dim  # 前面的d_model参数
         self.head_dim = embed_dim // num_heads  # head_dim 指的就是d_k,d_v
@@ -298,8 +326,7 @@ class MultiheadAttention(nn.Module):
 
     def _reset_parameters(self):
         """
-        以特定方式来初始化参数
-        :return:
+        初始化参数
         """
         for p in self.parameters():
             if p.dim() > 1:
@@ -307,17 +334,16 @@ class MultiheadAttention(nn.Module):
 
     def forward(self, query, key, value, attn_mask=None, key_padding_mask=None, freqs_cis=None):
         """
-        在论文中，编码时query, key, value 都是同一个输入， 解码时 输入的部分也都是同一个输入，
-        解码和编码交互时 key,value指的是 memory, query指的是tgt
-        :param query: # [tgt_len, batch_size, embed_dim], tgt_len 表示目标序列的长度
-        :param key:  #  [src_len, batch_size, embed_dim], src_len 表示源序列的长度
-        :param value: # [src_len, batch_size, embed_dim], src_len 表示源序列的长度
-        :param attn_mask: # [tgt_len,src_len] or [num_heads*batch_size,tgt_len, src_len]
-                一般只在解码时使用，为了并行一次喂入所有解码部分的输入，所以要用mask来进行掩盖当前时刻之后的位置信息
-        :param key_padding_mask: [batch_size, src_len], src_len 表示源序列的长度
-        :return:
-        attn_output: [tgt_len, batch_size, embed_dim]
-        attn_output_weights: # [batch_size, tgt_len, src_len]
+        Args:
+            query: Tensor, 查询张量，[tgt_len, batch_size, embed_dim]
+            key: Tensor, 键张量，[src_len, batch_size, embed_dim]
+            value: Tensor, 值张量，[src_len, batch_size, embed_dim]
+            attn_mask: Tensor, 注意力机制的mask，[tgt_len, src_len] or [num_heads*batch_size,tgt_len, src_len]
+            key_padding_mask: Tensor, 键的padding mask，[batch_size, src_len]
+            freqs_cis: Tensor, 旋转位置编码，[seq_len, dim]
+        Returns:
+            attn_output: Tensor, 注意力机制的输出，[tgt_len, batch_size, embed_dim]
+            attn_output_weights: Tensor, 注意力机制的权重，[batch_size, tgt_len, src_len]
         """
         return multi_head_attention_forward(query, key, value, self.num_heads,
                                             self.dropout,
@@ -367,26 +393,26 @@ def multi_head_attention_forward(query,  # [tgt_len,batch_size, embed_dim]
     elif qkv_pos == 'relative':
         pass
     
-    if is_print_shape:
-        print("" + "=" * 80)
-        print("进入多头注意力计算:")
-        print(
-            f"\t 多头num_heads = {num_heads}, d_model={query.size(-1)}, d_k = d_v = d_model/num_heads={query.size(-1) // num_heads}")
-        print(f"\t query的shape([tgt_len, batch_size, embed_dim]):{query.shape}")
-        print(f"\t  W_q 的shape([embed_dim,kdim * num_heads]):{q_proj.weight.shape}")
-        print(f"\t   Q  的shape([tgt_len, batch_size,kdim * num_heads]):{q.shape}")
-        print("\t" + "-" * 70)
+    # if is_print_shape:
+    #     print("" + "=" * 80)
+    #     print("进入多头注意力计算:")
+    #     print(
+    #         f"\t 多头num_heads = {num_heads}, d_model={query.size(-1)}, d_k = d_v = d_model/num_heads={query.size(-1) // num_heads}")
+    #     print(f"\t query的shape([tgt_len, batch_size, embed_dim]):{query.shape}")
+    #     print(f"\t  W_q 的shape([embed_dim,kdim * num_heads]):{q_proj.weight.shape}")
+    #     print(f"\t   Q  的shape([tgt_len, batch_size,kdim * num_heads]):{q.shape}")
+    #     print("\t" + "-" * 70)
 
-        print(f"\t  key 的shape([src_len,batch_size, embed_dim]):{key.shape}")
-        print(f"\t  W_k 的shape([embed_dim,kdim * num_heads]):{k_proj.weight.shape}")
-        print(f"\t   K  的shape([src_len,batch_size,kdim * num_heads]):{k.shape}")
-        print("\t" + "-" * 70)
+    #     print(f"\t  key 的shape([src_len,batch_size, embed_dim]):{key.shape}")
+    #     print(f"\t  W_k 的shape([embed_dim,kdim * num_heads]):{k_proj.weight.shape}")
+    #     print(f"\t   K  的shape([src_len,batch_size,kdim * num_heads]):{k.shape}")
+    #     print("\t" + "-" * 70)
 
-        print(f"\t value的shape([src_len,batch_size, embed_dim]):{value.shape}")
-        print(f"\t  W_v 的shape([embed_dim,vdim * num_heads]):{v_proj.weight.shape}")
-        print(f"\t   V  的shape([src_len,batch_size,vdim * num_heads]):{v.shape}")
-        print("\t" + "-" * 70)
-        print("\t ***** 注意，这里的W_q, W_k, W_v是多个head同时进行计算的. 因此，Q,K,V分别也是包含了多个head的q,k,v堆叠起来的结果 *****")
+    #     print(f"\t value的shape([src_len,batch_size, embed_dim]):{value.shape}")
+    #     print(f"\t  W_v 的shape([embed_dim,vdim * num_heads]):{v_proj.weight.shape}")
+    #     print(f"\t   V  的shape([src_len,batch_size,vdim * num_heads]):{v.shape}")
+    #     print("\t" + "-" * 70)
+    #     print("\t ***** 注意，这里的W_q, W_k, W_v是多个head同时进行计算的. 因此，Q,K,V分别也是包含了多个head的q,k,v堆叠起来的结果 *****")
 
     tgt_len, bsz, embed_dim = query.size()  # [tgt_len,batch_size, embed_dim]
     src_len = key.size(0)
@@ -441,8 +467,8 @@ def multi_head_attention_forward(query,  # [tgt_len,batch_size, embed_dim]
 
     Z = out_proj(attn_output)
     # 这里就是多个z  线性组合成Z  [tgt_len,batch_size,embed_dim]
-    if is_print_shape:
-        print(f"\t 多头注意力中,多头计算结束后的形状（堆叠）为([tgt_len,batch_size,num_heads*kdim]){attn_output.shape}")
-        print(f"\t 多头计算结束后，再进行线性变换时的权重W_o的形状为([num_heads*vdim, num_heads*vdim  ]){out_proj.weight.shape}")
-        print(f"\t 多头线性变化后的形状为([tgt_len,batch_size,embed_dim]) {Z.shape}")
+    # if is_print_shape:
+    #     print(f"\t 多头注意力中,多头计算结束后的形状（堆叠）为([tgt_len,batch_size,num_heads*kdim]){attn_output.shape}")
+    #     print(f"\t 多头计算结束后，再进行线性变换时的权重W_o的形状为([num_heads*vdim, num_heads*vdim  ]){out_proj.weight.shape}")
+    #     print(f"\t 多头线性变化后的形状为([tgt_len,batch_size,embed_dim]) {Z.shape}")
     return Z, attn_output_weights.sum(dim=1) / num_heads  # average attention weights over heads

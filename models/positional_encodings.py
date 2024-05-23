@@ -35,7 +35,7 @@ class LearnablePositionalEncoding(nn.Module):
         x = x + pos
         return x
 
-# 生成旋转矩阵
+# 生成旋转角度
 def precompute_freqs_cis(dim: int, seq_len: int, theta: float = 10000.0):
     # 计算词向量元素两两分组之后，每组元素对应的旋转角度\theta_i
     freqs = 1.0 / (theta ** (torch.arange(0, dim, 2)[: (dim // 2)].float() / dim))
@@ -71,56 +71,56 @@ def apply_rotary_emb(
     xk_out = torch.view_as_real(xk_ * freqs_cis[: xk.shape[1]]).flatten(2)
     return xq_out.type_as(xq), xk_out.type_as(xk)
 
-# def sin_position_encoding(batch_size, max_len, output_dim):
-#     '''
-#     :return: [batch_size, max_len, d_model]
-#     '''
-#     pe = torch.zeros(max_len, output_dim)  # [max_len, d_model]
-#     position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)  # [max_len, 1]
-#     div_term = torch.exp(torch.arange(0, output_dim, 2).float() * (-math.log(10000.0) / output_dim))  # [d_model/2]
-#     pe[:, 0::2] = torch.sin(position * div_term)  # [max_len, d_model/2]
-#     pe[:, 1::2] = torch.cos(position * div_term)
-#     pe = pe.unsqueeze(1)
-#     pe = pe.transpose(0, 1)
-#     return pe
+def sin_position_encoding(batch_size, max_len, output_dim):
+    '''
+    :return: [batch_size, max_len, d_model]
+    '''
+    pe = torch.zeros(max_len, output_dim)  # [max_len, d_model]
+    position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)  # [max_len, 1]
+    div_term = torch.exp(torch.arange(0, output_dim, 2).float() * (-math.log(10000.0) / output_dim))  # [d_model/2]
+    pe[:, 0::2] = torch.sin(position * div_term)  # [max_len, d_model/2]
+    pe[:, 1::2] = torch.cos(position * div_term)
+    pe = pe.unsqueeze(1)
+    pe = pe.transpose(0, 1)
+    return pe
 
 
-# def RoPE(q, k):
-#     # q,k: (bs, head, max_len, output_dim)
-#     batch_size_q = q.shape[0]
-#     max_len_q = q.shape[1]
-#     output_dim_q = q.shape[-1]
+def RoPE(q, k):
+    # q,k: (bs, head, max_len, output_dim)
+    batch_size_q = q.shape[0]
+    max_len_q = q.shape[1]
+    output_dim_q = q.shape[-1]
 
-#     batch_size_k = k.shape[0]
-#     max_len_k = k.shape[1]
-#     output_dim_k = k.shape[-1]
+    batch_size_k = k.shape[0]
+    max_len_k = k.shape[1]
+    output_dim_k = k.shape[-1]
 
-#     # (bs, head, max_len, output_dim)
-#     '''
-#     pos_emb = sinusoidal_position_embedding(batch_size, nums_head, max_len, output_dim, q.device)
-#     '''
-#     # (bs, max_len_q/k, output_dim_q/k)
-#     pos_emb_q = sin_position_encoding(batch_size=batch_size_q, max_len=max_len_q, output_dim=output_dim_q)
-#     pos_emb_k = sin_position_encoding(batch_size=batch_size_k, max_len=max_len_k, output_dim=output_dim_k)
+    # (bs, head, max_len, output_dim)
+    '''
+    pos_emb = sinusoidal_position_embedding(batch_size, nums_head, max_len, output_dim, q.device)
+    '''
+    # (bs, max_len_q/k, output_dim_q/k)
+    pos_emb_q = sin_position_encoding(batch_size=batch_size_q, max_len=max_len_q, output_dim=output_dim_q)
+    pos_emb_k = sin_position_encoding(batch_size=batch_size_k, max_len=max_len_k, output_dim=output_dim_k)
 
-#     # cos_pos,sin_pos: (bs, head, max_len, output_dim)
-#     # 看rope公式可知，相邻cos，sin之间是相同的，所以复制一遍。如(1,2,3)变成(1,1,2,2,3,3)
-#     cos_pos_q = pos_emb_q[...,  1::2].repeat_interleave(2, dim=-1)  # 将奇数列信息抽取出来也就是cos 拿出来并复制
-#     sin_pos_q = pos_emb_q[..., ::2].repeat_interleave(2, dim=-1)  # 将偶数列信息抽取出来也就是sin 拿出来并复制
+    # cos_pos,sin_pos: (bs, head, max_len, output_dim)
+    # 看rope公式可知，相邻cos，sin之间是相同的，所以复制一遍。如(1,2,3)变成(1,1,2,2,3,3)
+    cos_pos_q = pos_emb_q[...,  1::2].repeat_interleave(2, dim=-1)  # 将奇数列信息抽取出来也就是cos 拿出来并复制
+    sin_pos_q = pos_emb_q[..., ::2].repeat_interleave(2, dim=-1)  # 将偶数列信息抽取出来也就是sin 拿出来并复制
 
-#     cos_pos_k = pos_emb_k[...,  1::2].repeat_interleave(2, dim=-1)  # 将奇数列信息抽取出来也就是cos 拿出来并复制
-#     sin_pos_k = pos_emb_k[..., ::2].repeat_interleave(2, dim=-1)  # 将偶数列信息抽取出来也就是sin 拿出来并复制
+    cos_pos_k = pos_emb_k[...,  1::2].repeat_interleave(2, dim=-1)  # 将奇数列信息抽取出来也就是cos 拿出来并复制
+    sin_pos_k = pos_emb_k[..., ::2].repeat_interleave(2, dim=-1)  # 将偶数列信息抽取出来也就是sin 拿出来并复制
 
-#     # q,k: (bs, head, max_len, output_dim)
-#     q2 = torch.stack([-q[..., 1::2], q[..., ::2]], dim=-1)
-#     q2 = q2.reshape(q.shape)  # reshape后就是正负交替了
+    # q,k: (bs, head, max_len, output_dim)
+    q2 = torch.stack([-q[..., 1::2], q[..., ::2]], dim=-1)
+    q2 = q2.reshape(q.shape)  # reshape后就是正负交替了
 
-#     # 更新qw, *对应位置相乘
-#     q = q * cos_pos_q + q2 * sin_pos_q
+    # 更新qw, *对应位置相乘
+    q = q * cos_pos_q + q2 * sin_pos_q
     
-#     k2 = torch.stack([-k[..., 1::2], k[..., ::2]], dim=-1)
-#     k2 = k2.reshape(k.shape)
-#     # 更新kw, *对应位置相乘
-#     k = k * cos_pos_k + k2 * sin_pos_k
+    k2 = torch.stack([-k[..., 1::2], k[..., ::2]], dim=-1)
+    k2 = k2.reshape(k.shape)
+    # 更新kw, *对应位置相乘
+    k = k * cos_pos_k + k2 * sin_pos_k
 
-#     return q, k
+    return q, k
